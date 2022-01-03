@@ -22,6 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RadioGroup
+            android:id="@+id/mainRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="16dp"
@@ -29,18 +30,21 @@
             app:layout_constraintTop_toBottomOf="@id/mainHeader">
 
             <RadioButton
+                android:id="@+id/glideRadioButton"
                 style="@style/radioButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/glide_radio_text" />
 
             <RadioButton
+                android:id="@+id/loadAppRadioButton"
                 style="@style/radioButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/load_app_radio_text" />
 
             <RadioButton
+                android:id="@+id/retrofitRadioButton"
                 style="@style/radioButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
