@@ -7,4 +7,6 @@
     <string name="file_name">File name:</string>
     <string name="status">Status:</string>
     <string name="ok">OK</string>
+    <string name="status_failed">Download failed</string>
+    <string name="status_success">Download Succeed</string>
 </resources>
