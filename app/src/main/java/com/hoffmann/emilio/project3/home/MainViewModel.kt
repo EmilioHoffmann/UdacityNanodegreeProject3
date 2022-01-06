@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hoffmann.emilio.project3.utils.DownloadOption
+import com.hoffmann.emilio.project3.utils.DownloadItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,18 +20,18 @@ class MainViewModel : ViewModel() {
     val downloadProgress: LiveData<Int>
         get() = _downloadProgress
 
-    private val _downloadStatus = MutableLiveData<Int>()
-    val downloadStatus: LiveData<Int>
+    private val _downloadStatus = MutableLiveData<DownloadItem>()
+    val downloadStatus: LiveData<DownloadItem>
         get() = _downloadStatus
 
     @SuppressLint("Range")
-    fun download(downloadManager: DownloadManager, downloadOption: DownloadOption) {
-        val request = DownloadManager.Request(Uri.parse(downloadOption.url))
+    fun download(downloadManager: DownloadManager, downloadItem: DownloadItem) {
+        val request = DownloadManager.Request(Uri.parse(downloadItem.url))
 
-        request.setTitle("${downloadOption.name}.zip")
+        request.setTitle("${downloadItem.name}.zip")
         request.setDestinationInExternalPublicDir(
             Environment.DIRECTORY_DOWNLOADS,
-            "${downloadOption.name}.zip"
+            "${downloadItem.name}.zip"
         )
 
         val downloadId = downloadManager.enqueue(request)
@@ -57,7 +57,7 @@ class MainViewModel : ViewModel() {
                     downloading = false
                 }
 
-                checkDownloadStatus(cursor)
+                checkDownloadStatus(cursor, downloadItem)
 
                 if (bytesTotal >= 0L) {
                     ((bytesDownloaded * 100L) / bytesTotal).toInt().let { progress ->
@@ -69,16 +69,18 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun checkDownloadStatus(cursor: Cursor) {
+    private fun checkDownloadStatus(cursor: Cursor, downloadFile: DownloadItem) {
         val columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
         when (cursor.getInt(columnIndex)) {
             DownloadManager.STATUS_FAILED -> {
-                _downloadStatus.postValue(DownloadManager.STATUS_FAILED)
+                downloadFile.downloadSucceed = false
+                _downloadStatus.postValue(downloadFile)
                 _downloadProgress.postValue(0)
             }
             DownloadManager.STATUS_SUCCESSFUL -> {
                 _downloadProgress.postValue(100)
-                _downloadStatus.postValue(DownloadManager.STATUS_SUCCESSFUL)
+                downloadFile.downloadSucceed = true
+                _downloadStatus.postValue(downloadFile)
             }
         }
     }

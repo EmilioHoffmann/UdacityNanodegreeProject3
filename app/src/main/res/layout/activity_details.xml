@@ -5,6 +5,13 @@
 
     <data>
 
+        <variable
+            name="itemName"
+            type="String" />
+
+        <variable
+            name="itemDownloadSucceeded"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,6 +37,7 @@
             style="@style/detailScreenValueStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{itemName}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/verticalGuideline"
             app:layout_constraintTop_toTopOf="@id/fileNameLabel"
@@ -52,12 +60,14 @@
             style="@style/detailScreenValueStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:bindDownloadStatus="@{itemDownloadSucceeded}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/verticalGuideline"
             app:layout_constraintTop_toTopOf="@id/fileStatusLabel"
             tools:text="Success" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/detailsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"

@@ -1,13 +1,19 @@
 package com.hoffmann.emilio.project3.home
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.hoffmann.emilio.project3.R
 import com.hoffmann.emilio.project3.databinding.ActivityMainBinding
-import com.hoffmann.emilio.project3.utils.DownloadOption
+import com.hoffmann.emilio.project3.utils.Constants.CHANNEL_ID
+import com.hoffmann.emilio.project3.utils.DownloadItem
+import com.hoffmann.emilio.project3.utils.sendNotification
 
 private lateinit var binding: ActivityMainBinding
 private lateinit var viewModel: MainViewModel
@@ -16,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        createChannel()
         viewModel = MainViewModel()
         setListeners()
         setObservers()
@@ -35,11 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.downloadStatus.observe(this) { status ->
             println("Download Status = $status")
-            // TODO GENERATE NOTIFICATION
-            when (status) {
-                DownloadManager.STATUS_SUCCESSFUL -> {}
-                DownloadManager.STATUS_FAILED -> {}
-            }
+            sendNotification(status)
         }
     }
 
@@ -48,13 +51,13 @@ class MainActivity : AppCompatActivity() {
 
         when (binding.mainRadioGroup.checkedRadioButtonId) {
             R.id.glideRadioButton -> {
-                viewModel.download(manager, DownloadOption.GLIDE)
+                viewModel.download(manager, DownloadItem.GLIDE)
             }
             R.id.loadAppRadioButton -> {
-                viewModel.download(manager, DownloadOption.LOAD_APP)
+                viewModel.download(manager, DownloadItem.LOAD_APP)
             }
             R.id.retrofitRadioButton -> {
-                viewModel.download(manager, DownloadOption.RETROFIT)
+                viewModel.download(manager, DownloadItem.RETROFIT)
             }
             else -> {
                 Toast.makeText(
@@ -64,5 +67,36 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                CHANNEL_ID,
+                getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                setShowBadge(false)
+            }
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = getColor(R.color.colorPrimary)
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = getString(R.string.notification_channel_description)
+
+            val notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun sendNotification(downloadItem: DownloadItem) {
+        val notificationManager = ContextCompat.getSystemService(
+            this,
+            NotificationManager::class.java
+        ) as NotificationManager
+
+        notificationManager.sendNotification(this, downloadItem)
     }
 }
