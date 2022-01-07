@@ -14,4 +14,6 @@
     <string name="notification_button">Check status</string>
     <string name="notification_channel_name">Download</string>
     <string name="notification_channel_description">Get notifications of your Downloads</string>
+    <string name="button_downloading">Downloading....</string>
+    <string name="download">Download</string>
 </resources>

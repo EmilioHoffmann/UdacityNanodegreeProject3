@@ -51,13 +51,17 @@
                 android:text="@string/retrofit_radio_text" />
         </RadioGroup>
 
-        <Button
+        <com.hoffmann.emilio.project3.utils.CustomButton
             android:id="@+id/downloadButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_margin="@dimen/big_margin"
-            android:text="Download"
-            android:textColor="@color/black"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            app:backgroundLoadingColor="@color/colorPrimary"
+            app:circleLoadingColor="@color/downloadProgressColor"
+            app:downloadingText="@string/button_downloading"
+            app:initialText="@string/download"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
