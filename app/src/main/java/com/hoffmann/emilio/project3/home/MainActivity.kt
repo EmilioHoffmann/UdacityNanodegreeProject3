@@ -36,18 +36,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        viewModel.downloadProgress.observe(this) {
-            println("Download Progress = $it")
+        viewModel.downloadProgress.observe(this) { downloadProgress ->
+            binding.downloadButton.setLoadingState(true, downloadProgress / 100)
         }
 
         viewModel.downloadStatus.observe(this) { status ->
-            println("Download Status = $status")
+            binding.downloadButton.setLoadingState(false)
             sendNotification(status)
         }
     }
 
     private fun handleDownloadClick() {
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        binding.downloadButton.setLoadingState(true, 0.01f)
 
         when (binding.mainRadioGroup.checkedRadioButtonId) {
             R.id.glideRadioButton -> {

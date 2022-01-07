@@ -1,14 +1,10 @@
-package com.hoffmann.emilio.project3.utils
+package com.hoffmann.emilio.project3.button
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PointF
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.withStyledAttributes
@@ -61,6 +57,7 @@ class CustomButton @JvmOverloads constructor(
             }
             ButtonState.Loading
         } else {
+            setLoadingLevel(downloadPercentage)
             ButtonState.Initial
         }
     }

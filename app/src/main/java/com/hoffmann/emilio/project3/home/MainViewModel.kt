@@ -12,12 +12,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hoffmann.emilio.project3.utils.DownloadItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
-    private val _downloadProgress = MutableLiveData<Int>()
-    val downloadProgress: LiveData<Int>
+    private val _downloadProgress = MutableLiveData<Float>()
+    val downloadProgress: LiveData<Float>
         get() = _downloadProgress
 
     private val _downloadStatus = MutableLiveData<DownloadItem>()
@@ -59,10 +60,10 @@ class MainViewModel : ViewModel() {
 
                 checkDownloadStatus(cursor, downloadItem)
 
-                if (bytesTotal >= 0L) {
-                    ((bytesDownloaded * 100L) / bytesTotal).toInt().let { progress ->
-                        if (progress > -1L) _downloadProgress.postValue(progress)
-                    }
+                if (bytesTotal >= 0L && downloading) {
+                    delay(500)
+                    val progress: Float = (bytesDownloaded * 100f / bytesTotal)
+                    _downloadProgress.postValue(progress)
                 }
                 cursor.close()
             }
@@ -75,10 +76,8 @@ class MainViewModel : ViewModel() {
             DownloadManager.STATUS_FAILED -> {
                 downloadFile.downloadSucceed = false
                 _downloadStatus.postValue(downloadFile)
-                _downloadProgress.postValue(0)
             }
             DownloadManager.STATUS_SUCCESSFUL -> {
-                _downloadProgress.postValue(100)
                 downloadFile.downloadSucceed = true
                 _downloadStatus.postValue(downloadFile)
             }
